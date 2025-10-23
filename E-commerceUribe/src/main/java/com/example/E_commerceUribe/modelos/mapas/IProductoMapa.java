@@ -18,5 +18,6 @@ public interface IProductoMapa {
     @Mapping( source = "aplicaDescuento", target = "aplicaDescuento")
     ProductoDTO convertir_producto_a_productodto(Producto producto);
 
-    List<ProductoDTO> convertir_producto_a_productodto(List<Producto> lista);
+    List<ProductoDTO> convertir_lista_a_productodto(List<Producto> lista);
+
 }

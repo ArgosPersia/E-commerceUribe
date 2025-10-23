@@ -2,49 +2,49 @@ package com.example.E_commerceUribe.modelos;
 
 import com.example.E_commerceUribe.ayudas.EstadosUsuario;
 import com.example.E_commerceUribe.ayudas.TipoDocumento;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
-
 @Entity
-@Table (name = "usuario")
+@Table(name = "usuario")
 public class Usuario {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column (name ="name", nullable = false, unique = false, length = 50)
+    @Column(name ="nombres", nullable = false, length = 50)
     private String nombres;
 
-    @Column (name = "email", nullable = false, unique = false, length = 25)
-    private  String correo;
+    @Column(name = "email", nullable = false, unique = true, length = 50)
+    private String correo;
 
-    @Column (name = "password", nullable = false, unique = false, length = 15)
-    private  String contraseña;
+    @Column(name = "password", nullable = false, length = 100)
+    private String contraseña;
 
-    @Column (name = "status", nullable = false, unique = false)
-    @Enumerated (EnumType.STRING) //-->
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false)
     private EstadosUsuario estado;
 
-    @Column(name="dateOfBirth",nullable = true, unique = false)
+    @Column(name="fechaNacimiento")
     private LocalDate fechaNacimiento;
 
-    @Column (name = "status", nullable = false, unique = false, length=10)
-    @Enumerated (EnumType.STRING)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipoDocumento", nullable = false, length = 15)
     private TipoDocumento tipoDocumento;
 
-    @Column(name="document",nullable = false, unique = true, length = 12)
+    @Column(name="documento", nullable = false, unique = true, length = 12)
     private String documento;
 
-    //CREANDO UNA RELACION 1 A 1 CON EMPLEADO
+    // Relación con Cliente
     @OneToOne(mappedBy = "usuario")
-    @JsonBackReference(value = "relacionempleadousuario")
+    private Cliente cliente;
+
+    // Relación con Empleado
+    @OneToOne(mappedBy = "usuario")
     private Empleado empleado;
-    public Usuario() {
-    }
+
+    public Usuario() {}
 
     public Usuario(Integer id, String nombres, String correo, String contraseña, EstadosUsuario estado, LocalDate fechaNacimiento, String documento, TipoDocumento tipoDocumento) {
         this.id = id;
@@ -105,6 +105,14 @@ public class Usuario {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    public TipoDocumento getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(TipoDocumento tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
     public String getDocumento() {
         return documento;
     }
@@ -113,11 +121,19 @@ public class Usuario {
         this.documento = documento;
     }
 
-    public TipoDocumento getTipoDocumento() {
-        return tipoDocumento;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setTipoDocumento(TipoDocumento tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
     }
 }

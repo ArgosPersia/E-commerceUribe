@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface IEmpleadoRepositrio extends JpaRepository<Empleado, Integer>{
+public interface IEmpleadoRepositorio extends JpaRepository<Empleado, Integer>{
     List<Empleado> findBySedeEmpleado (SedeEmpleado sedeEmpleado);
 }
 

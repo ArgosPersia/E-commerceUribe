@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface IClienteRepositrio extends JpaRepository<Cliente, Integer> {
+public interface IClienteRepositorio extends JpaRepository<Cliente, Integer> {
     Optional<Cliente> findbycliente (DepartamentoCliente departamentoCliente);
 }
 

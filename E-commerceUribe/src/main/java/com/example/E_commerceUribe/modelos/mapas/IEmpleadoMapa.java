@@ -15,7 +15,7 @@ public interface IEmpleadoMapa {
     @Mapping(source = "cargoEmpleado", target = "cargoEmpleado")
     @Mapping(source = "salario", target = "salario")
     @Mapping(source = "sedeEmpleado", target = "sedeEmpleado")
-    EmpleadoDTO convertir_empleado_a_empleadodto(EmpleadoDTO empleado);
+    EmpleadoDTO convertir_empleado_a_empleadodto(Empleado empleado);
 
     List<EmpleadoDTO> convertir_lista_a_empleadodto(List<Empleado> lista);
 }
