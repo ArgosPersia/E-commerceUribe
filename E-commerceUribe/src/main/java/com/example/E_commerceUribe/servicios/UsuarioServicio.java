@@ -1,6 +1,7 @@
 package com.example.E_commerceUribe.servicios;
 
 import com.example.E_commerceUribe.modelos.DTO.UsuarioDTO;
+import com.example.E_commerceUribe.modelos.DTO.UsuarioEspecialDTO;
 import com.example.E_commerceUribe.modelos.Usuario;
 import com.example.E_commerceUribe.modelos.mapas.IUsuarioMapa;
 import com.example.E_commerceUribe.repositorios.IUsuarioRepositorio;
@@ -8,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioServicio {
@@ -56,5 +61,74 @@ public class UsuarioServicio {
 
         // Retornar el DTO del usuario guardado
         return this.usuarioMapa.convertir_usuario_a_usuariodto(usuarioGuardado);
+    }
+
+    //----- Funciones nuevas-----
+    // Buscar todos los usuarios - (Todas las funciones son públicas y cualquier servicio me ha de entregar un dto)
+
+    public List<UsuarioDTO> buscarListaDeUsuarios(){
+    List<Usuario> listaDeUsuarios = this.repositorio.findAll();
+    return this.usuarioMapa.convetir_lista_a_listadto(listaDeUsuarios);
+    }
+
+    // Buscar un usuario por ID
+    public UsuarioDTO BuscarUsuarioPorId(Integer id){
+        Optional<Usuario> usuarioOpcional = this.repositorio.findById(id);
+        if (!usuarioOpcional.isPresent()) {
+            throw  new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontro ningun usuario con el id "+id+" "
+            );
+        }
+        Usuario usuarioEncontrado = usuarioOpcional.get();
+        return this.usuarioMapa.convertir_usuario_a_usuariodto(usuarioEncontrado);
+    }
+
+    // Eliminar usuario
+    public void eliminarUsuario(Integer id){
+        Optional<Usuario> usuarioOpcional = this.repositorio.findById(id);
+        if (!usuarioOpcional.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Se ha encontrado el usuario con el id "+id+" suministrado"
+            );
+        }
+        Usuario usuarioEncontrado = usuarioOpcional.get();
+        try {
+            this.repositorio.delete(usuarioEncontrado);
+        }catch (Exception error){
+            throw new ResponseStatusException(
+              HttpStatus.INTERNAL_SERVER_ERROR,
+              "Error al eliminar el usuario con el id, "+error.getMessage()
+            );
+        }
+    }
+    // Modificador algunos datos de un usuario
+    public UsuarioDTO actualizarUsuario(Integer id,  Usuario datosActualizados) {
+        Optional<Usuario> usuarioOpcional = this.repositorio.findById(id);
+        if (!usuarioOpcional.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Se ha encontrado el usuario con el id " + id + " suministrado"
+            );
+        }
+        Usuario usuarioEncontrado = usuarioOpcional.get();
+        //Aplicar validación sobre los datos que se resiven desde el front
+
+        //Actualizar los campos que se han permitido modificar
+        //Nombre
+        usuarioEncontrado.setNombres(datosActualizados.getNombres());
+        //Correo
+        usuarioEncontrado.setCorreo(datosActualizados.getCorreo());
+
+        //Concluir con la operación en la base de datos
+        Usuario usuarioActualizo = this.repositorio.save(usuarioEncontrado);
+        if (usuarioActualizo == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al actualizar el usuario en la base de datos, intente nuevamente"
+            );
+        }
+        return this.usuarioMapa.convertir_usuario_a_usuariodto(usuarioActualizo);
     }
 }

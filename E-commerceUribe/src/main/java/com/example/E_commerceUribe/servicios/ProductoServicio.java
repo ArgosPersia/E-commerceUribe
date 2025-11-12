@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ProductoServicio {
 
@@ -38,5 +42,96 @@ public class ProductoServicio {
 
         // Retornar DTO
         return this.productoMapa.convertir_producto_a_productodto(productoGuardado);
+    }
+
+    //----- Funciones nuevas -----
+
+    // Buscar todos los productos
+    public List<ProductoDTO> buscarTodosLosProductos() {
+        List<Producto> listaProductos = this.repositorio.findAll();
+        return this.productoMapa.convertir_lista_a_productodto(listaProductos);
+    }
+
+    // Buscar un producto por ID
+    public ProductoDTO buscarProductoPorId(Integer id) {
+        Optional<Producto> productoOpcional = this.repositorio.findById(id);
+        if (!productoOpcional.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontró ningún producto con el id " + id
+            );
+        }
+        Producto productoEncontrado = productoOpcional.get();
+        return this.productoMapa.convertir_producto_a_productodto(productoEncontrado);
+    }
+
+    // Eliminar producto
+    public void eliminarProducto(Integer id) {
+        Optional<Producto> productoOpcional = this.repositorio.findById(id);
+        if (!productoOpcional.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontró el producto con el id " + id
+            );
+        }
+        Producto productoEncontrado = productoOpcional.get();
+        try {
+            this.repositorio.delete(productoEncontrado);
+        } catch (Exception error) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al eliminar el producto, " + error.getMessage()
+            );
+        }
+    }
+
+    // Actualizar datos de un producto
+    public ProductoDTO actualizarProducto(Integer id, Producto datosActualizados) {
+        Optional<Producto> productoOpcional = this.repositorio.findById(id);
+        if (!productoOpcional.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontró el producto con el id " + id
+            );
+        }
+        Producto productoEncontrado = productoOpcional.get();
+
+        // Actualizar los campos permitidos
+        // Nombre
+        productoEncontrado.setNombre(datosActualizados.getNombre());
+        // Precio
+        productoEncontrado.setPrecioUnitario(datosActualizados.getPrecioUnitario());
+        // Descripción
+        productoEncontrado.setDescripcion(datosActualizados.getDescripcion());
+
+        // Guardar en la base de datos
+        Producto productoActualizado = this.repositorio.save(productoEncontrado);
+        if (productoActualizado == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al actualizar el producto en la base de datos"
+            );
+        }
+        return this.productoMapa.convertir_producto_a_productodto(productoActualizado);
+    }
+
+    // Buscar productos por marca
+    public List<ProductoDTO> buscarProductosPorMarca(String marca) {
+        List<Producto> todosLosProductos = this.repositorio.findAll();
+        List<Producto> productosPorMarca = new ArrayList<>();
+
+        for (Producto producto : todosLosProductos) {
+            if (producto.getMarca().equals(marca)) {
+                productosPorMarca.add(producto);
+            }
+        }
+
+        if (productosPorMarca.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontraron productos de la marca " + marca
+            );
+        }
+        return this.productoMapa.convertir_lista_a_productodto(productosPorMarca);
     }
 }
