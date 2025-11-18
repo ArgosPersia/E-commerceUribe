@@ -5,11 +5,12 @@ import com.example.E_commerceUribe.modelos.Cliente;
 import com.example.E_commerceUribe.modelos.mapas.IClienteMapa;
 import com.example.E_commerceUribe.repositorios.IClienteRepositorio;
 import com.example.E_commerceUribe.repositorios.IUsuarioRepositorio;
-import com.example.E_commerceUribe.ayudas.DepartamentoCliente; // Importar el Enum
+import com.example.E_commerceUribe.ayudas.DepartamentoCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional; // <-- ¡Importar esta!
 
 import java.util.List;
 import java.util.Optional;
@@ -28,10 +29,7 @@ public class ClienteServicio {
 
     // 1. MÉTODO GUARDAR
     public ClienteDTO guardarCliente(ClienteDTO datosDTO) {
-
         Cliente cliente = this.clienteMapa.convertir_cliente_dto_a_cliente(datosDTO);
-
-        // Validación: El usuario debe existir
         if (cliente.getUsuario() == null || cliente.getUsuario().getId() == null ||
                 !usuarioRepositorio.existsById(cliente.getUsuario().getId())) {
             throw new ResponseStatusException(
@@ -39,7 +37,6 @@ public class ClienteServicio {
                     "El ID de usuario proporcionado no existe."
             );
         }
-
         Cliente clienteGuardado = this.repositorio.save(cliente);
         return this.clienteMapa.convertir_cliente_a_clientedto(clienteGuardado);
     }
@@ -58,6 +55,7 @@ public class ClienteServicio {
     }
 
     // 4. MÉTODO ELIMINAR
+    @Transactional // <--- ¡CAMBIO APLICADO!
     public void eliminarCliente(Integer id){
         if (!this.repositorio.existsById(id)) {
             throw new ResponseStatusException(
@@ -66,6 +64,7 @@ public class ClienteServicio {
             );
         }
         try {
+            // Usar deleteById para evitar problemas de Attached/Detached entities
             this.repositorio.deleteById(id);
         }catch (Exception error){
             throw new ResponseStatusException(
@@ -98,31 +97,24 @@ public class ClienteServicio {
         return this.clienteMapa.convertir_cliente_a_clientedto(clienteActualizado);
     }
 
-    // 6. MÉTODO BUSCAR POR DEPARTAMENTO (CORRECCIÓN FINAL DE TIPOS)
+    // 6. MÉTODO BUSCAR POR DEPARTAMENTO
     public List<ClienteDTO> buscarClientesPorDepartamento(String departamento) {
-
         DepartamentoCliente departamentoEnum;
         try {
-            // CONVERSIÓN CRUCIAL: Convierte el String de entrada a MAYÚSCULAS y luego al Enum
             departamentoEnum = DepartamentoCliente.valueOf(departamento.toUpperCase());
-
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "El valor de departamento '" + departamento + "' no es válido."
             );
         }
-
-        // Usa el Enum en el repositorio (asumiendo que IClienteRepositorio tiene findByDepartamentoCliente(Enum))
         List<Cliente> clientes = this.repositorio.findByDepartamentoCliente(departamentoEnum);
-
         if (clientes.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "No se encontraron clientes en el departamento: " + departamento
             );
         }
-
         return this.clienteMapa.convertir_lista_a_listadto(clientes);
     }
 }

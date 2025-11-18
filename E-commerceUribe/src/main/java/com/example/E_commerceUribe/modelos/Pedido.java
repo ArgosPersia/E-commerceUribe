@@ -30,6 +30,11 @@ public class Pedido {
     @JsonManagedReference(value = "relacionpedidoproducto")
     private List<Producto> productos;
 
+    // 🔑 CORRECCIÓN CLAVE: Un pedido pertenece a un cliente
+    @ManyToOne
+    @JoinColumn(name = "fk_cliente") // Columna de clave foránea en la tabla 'pedido'
+    private Cliente cliente;
+
     public Pedido() {
     }
 
@@ -41,43 +46,19 @@ public class Pedido {
         this.costoEnvio = costoEnvio;
     }
 
-    public Integer getId() {
-        return id;
-    }
+    // Getters y Setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public Integer getMontoTotal() { return montoTotal; }
+    public void setMontoTotal(Integer montoTotal) { this.montoTotal = montoTotal; }
+    public LocalDate getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(LocalDate fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    public LocalDate getFechaEntrega() { return fechaEntrega; }
+    public void setFechaEntrega(LocalDate fechaEntrega) { this.fechaEntrega = fechaEntrega; }
+    public Integer getCostoEnvio() { return costoEnvio; }
+    public void setCostoEnvio(Integer costoEnvio) { this.costoEnvio = costoEnvio; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getMontoTotal() {
-        return montoTotal;
-    }
-
-    public void setMontoTotal(Integer montoTotal) {
-        this.montoTotal = montoTotal;
-    }
-
-    public LocalDate getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(LocalDate fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public LocalDate getFechaEntrega() {
-        return fechaEntrega;
-    }
-
-    public void setFechaEntrega(LocalDate fechaEntrega) {
-        this.fechaEntrega = fechaEntrega;
-    }
-
-    public Integer getCostoEnvio() {
-        return costoEnvio;
-    }
-
-    public void setCostoEnvio(Integer costoEnvio) {
-        this.costoEnvio = costoEnvio;
-    }
+    // Getter y Setter para Cliente
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 }

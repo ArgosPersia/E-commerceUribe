@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-16T22:51:11-0500",
-    comments = "version: 1.5.4.Final, compiler: javac, environment: Java 25.0.1 (Oracle Corporation)"
+    date = "2025-11-18T08:00:33-0500",
+    comments = "version: 1.5.4.Final, compiler: javac, environment: Java 17.0.17 (Microsoft)"
 )
 @Component
 public class IUsuarioMapaImpl implements IUsuarioMapa {

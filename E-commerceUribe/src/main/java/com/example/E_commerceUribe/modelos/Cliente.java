@@ -2,6 +2,7 @@ package com.example.E_commerceUribe.modelos;
 
 import com.example.E_commerceUribe.ayudas.DepartamentoCliente;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="cliente")
@@ -27,10 +28,15 @@ public class Cliente {
     @Column(name = "ciudad", nullable = false, length = 50)
     private String ciudad;
 
-    // Relación con Usuario (lado propietario)
-    @OneToOne
-    @JoinColumn(name = "fk_usuario")  // Esto crea la columna fk_usuario en la tabla cliente
+    // Relación con Usuario
+    // AÑADIMOS CascadeType.REMOVE para asegurar que el OneToOne se maneje correctamente en la eliminación.
+    @OneToOne(cascade = CascadeType.REMOVE) // <--- ¡CAMBIO APLICADO!
+    @JoinColumn(name = "fk_usuario")
     private Usuario usuario;
+
+    // Relación con Pedidos (ya tenía la cascada correcta)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Pedido> pedidos;
 
     public Cliente() {}
 
@@ -48,22 +54,18 @@ public class Cliente {
     // Getters y Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
-
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
-
     public Double getCalificacion() { return calificacion; }
     public void setCalificacion(Double calificacion) { this.calificacion = calificacion; }
-
     public String getReferenciaPago() { return referenciaPago; }
     public void setReferenciaPago(String referenciaPago) { this.referenciaPago = referenciaPago; }
-
     public DepartamentoCliente getDepartamentoCliente() { return departamentoCliente; }
     public void setDepartamentoCliente(DepartamentoCliente departamentoCliente) { this.departamentoCliente = departamentoCliente; }
-
     public String getCiudad() { return ciudad; }
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
-
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public List<Pedido> getPedidos() { return pedidos; }
+    public void setPedidos(List<Pedido> pedidos) { this.pedidos = pedidos; }
 }
