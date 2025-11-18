@@ -1,15 +1,16 @@
 package com.example.E_commerceUribe.servicios;
 
-import com.example.E_commerceUribe.modelos.Cliente;
 import com.example.E_commerceUribe.modelos.DTO.ClienteDTO;
+import com.example.E_commerceUribe.modelos.Cliente;
 import com.example.E_commerceUribe.modelos.mapas.IClienteMapa;
 import com.example.E_commerceUribe.repositorios.IClienteRepositorio;
+import com.example.E_commerceUribe.repositorios.IUsuarioRepositorio;
+import com.example.E_commerceUribe.ayudas.DepartamentoCliente; // Importar el Enum
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,116 +23,106 @@ public class ClienteServicio {
     @Autowired
     private IClienteMapa clienteMapa;
 
-    public ClienteDTO guardarCliente(Cliente datosCliente) {
-        // Validación de dirección obligatoria
-        if (datosCliente.getDireccion() == null || datosCliente.getDireccion().isBlank()) {
+    @Autowired
+    private IUsuarioRepositorio usuarioRepositorio;
+
+    // 1. MÉTODO GUARDAR
+    public ClienteDTO guardarCliente(ClienteDTO datosDTO) {
+
+        Cliente cliente = this.clienteMapa.convertir_cliente_dto_a_cliente(datosDTO);
+
+        // Validación: El usuario debe existir
+        if (cliente.getUsuario() == null || cliente.getUsuario().getId() == null ||
+                !usuarioRepositorio.existsById(cliente.getUsuario().getId())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "La dirección es obligatoria"
+                    "El ID de usuario proporcionado no existe."
             );
         }
 
-        // Guardar cliente
-        Cliente clienteGuardado = this.repositorio.save(datosCliente);
-        if (clienteGuardado == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al guardar el cliente en la base de datos"
-            );
-        }
-
-        // Retornar DTO
+        Cliente clienteGuardado = this.repositorio.save(cliente);
         return this.clienteMapa.convertir_cliente_a_clientedto(clienteGuardado);
     }
 
-    //----- Funciones nuevas -----
-
-    // Buscar todos los clientes
+    // 2. MÉTODO LISTAR
     public List<ClienteDTO> buscarTodosLosClientes() {
-        List<Cliente> listaClientes = this.repositorio.findAll();
-        return this.clienteMapa.convertir_lista_a_clientedto(listaClientes);
+        List<Cliente> clientes = this.repositorio.findAll();
+        return this.clienteMapa.convertir_lista_a_listadto(clientes);
     }
 
-    // Buscar un cliente por ID
+    // 3. MÉTODO BUSCAR POR ID
     public ClienteDTO buscarClientePorId(Integer id) {
-        Optional<Cliente> clienteOpcional = this.repositorio.findById(id);
-        if (!clienteOpcional.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontró ningún cliente con el id " + id
-            );
-        }
-        Cliente clienteEncontrado = clienteOpcional.get();
-        return this.clienteMapa.convertir_cliente_a_clientedto(clienteEncontrado);
+        Cliente cliente = this.repositorio.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado con ID: " + id));
+        return this.clienteMapa.convertir_cliente_a_clientedto(cliente);
     }
 
-    // Eliminar cliente
-    public void eliminarCliente(Integer id) {
-        Optional<Cliente> clienteOpcional = this.repositorio.findById(id);
-        if (!clienteOpcional.isPresent()) {
+    // 4. MÉTODO ELIMINAR
+    public void eliminarCliente(Integer id){
+        if (!this.repositorio.existsById(id)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "No se encontró el cliente con el id " + id
+                    "No se ha encontrado el cliente con el ID "+id+" suministrado"
             );
         }
-        Cliente clienteEncontrado = clienteOpcional.get();
         try {
-            this.repositorio.delete(clienteEncontrado);
-        } catch (Exception error) {
+            this.repositorio.deleteById(id);
+        }catch (Exception error){
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al eliminar el cliente, " + error.getMessage()
+                    "Error al eliminar el cliente: "+error.getMessage()
             );
         }
     }
 
-    // Actualizar datos de un cliente
-    public ClienteDTO actualizarCliente(Integer id, Cliente datosActualizados) {
-        Optional<Cliente> clienteOpcional = this.repositorio.findById(id);
-        if (!clienteOpcional.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontró el cliente con el id " + id
-            );
-        }
-        Cliente clienteEncontrado = clienteOpcional.get();
+    // 5. MÉTODO ACTUALIZAR
+    public ClienteDTO actualizarCliente(Integer id, ClienteDTO datosDTO) {
+        Cliente clienteEncontrado = this.repositorio.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No se ha encontrado el cliente con el ID " + id + " suministrado")
+                );
 
-        // Actualizar los campos permitidos
-        // Dirección
+        // Mapear los campos del DTO al cliente existente
+        Cliente datosActualizados = this.clienteMapa.convertir_cliente_dto_a_cliente(datosDTO);
+
+        // Solo actualizamos los campos modificables
         clienteEncontrado.setDireccion(datosActualizados.getDireccion());
-        // Calificación
         clienteEncontrado.setCalificacion(datosActualizados.getCalificacion());
-        // Ciudad
+        clienteEncontrado.setReferenciaPago(datosActualizados.getReferenciaPago());
+        clienteEncontrado.setDepartamentoCliente(datosActualizados.getDepartamentoCliente());
         clienteEncontrado.setCiudad(datosActualizados.getCiudad());
 
-        // Guardar en la base de datos
         Cliente clienteActualizado = this.repositorio.save(clienteEncontrado);
-        if (clienteActualizado == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el cliente en la base de datos"
-            );
-        }
+
         return this.clienteMapa.convertir_cliente_a_clientedto(clienteActualizado);
     }
 
-    // Buscar clientes por departamento
+    // 6. MÉTODO BUSCAR POR DEPARTAMENTO (CORRECCIÓN FINAL DE TIPOS)
     public List<ClienteDTO> buscarClientesPorDepartamento(String departamento) {
-        List<Cliente> todosLosClientes = this.repositorio.findAll();
-        List<Cliente> clientesPorDepartamento = new ArrayList<>();
 
-        for (Cliente cliente : todosLosClientes) {
-            if (cliente.getDepartamentoCliente().toString().equals(departamento)) {
-                clientesPorDepartamento.add(cliente);
-            }
-        }
+        DepartamentoCliente departamentoEnum;
+        try {
+            // CONVERSIÓN CRUCIAL: Convierte el String de entrada a MAYÚSCULAS y luego al Enum
+            departamentoEnum = DepartamentoCliente.valueOf(departamento.toUpperCase());
 
-        if (clientesPorDepartamento.isEmpty()) {
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontraron clientes en el departamento " + departamento
+                    HttpStatus.BAD_REQUEST,
+                    "El valor de departamento '" + departamento + "' no es válido."
             );
         }
-        return this.clienteMapa.convertir_lista_a_clientedto(clientesPorDepartamento);
+
+        // Usa el Enum en el repositorio (asumiendo que IClienteRepositorio tiene findByDepartamentoCliente(Enum))
+        List<Cliente> clientes = this.repositorio.findByDepartamentoCliente(departamentoEnum);
+
+        if (clientes.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "No se encontraron clientes en el departamento: " + departamento
+            );
+        }
+
+        return this.clienteMapa.convertir_lista_a_listadto(clientes);
     }
 }

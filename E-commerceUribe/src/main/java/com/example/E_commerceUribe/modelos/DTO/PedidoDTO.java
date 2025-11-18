@@ -12,42 +12,23 @@ public class PedidoDTO {
     public PedidoDTO() {
     }
 
-    public PedidoDTO(Integer id, Integer montoTotal, LocalDate fechaEntrega, Integer costoEnvio) {
-        this.id = id;
+    // Constructor corregido: NO INCLUYE el ID (para la operación POST/Creación)
+    public PedidoDTO(Integer montoTotal, LocalDate fechaEntrega, Integer costoEnvio) {
         this.montoTotal = montoTotal;
         this.fechaEntrega = fechaEntrega;
         this.costoEnvio = costoEnvio;
     }
 
-    public Integer getId() {
-        return id;
-    }
+    // Getters y Setters completos
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public Integer getMontoTotal() { return montoTotal; }
+    public void setMontoTotal(Integer montoTotal) { this.montoTotal = montoTotal; }
 
-    public Integer getMontoTotal() {
-        return montoTotal;
-    }
+    public LocalDate getFechaEntrega() { return fechaEntrega; }
+    public void setFechaEntrega(LocalDate fechaEntrega) { this.fechaEntrega = fechaEntrega; }
 
-    public void setMontoTotal(Integer montoTotal) {
-        this.montoTotal = montoTotal;
-    }
-
-    public LocalDate getFechaEntrega() {
-        return fechaEntrega;
-    }
-
-    public void setFechaEntrega(LocalDate fechaEntrega) {
-        this.fechaEntrega = fechaEntrega;
-    }
-
-    public Integer getCostoEnvio() {
-        return costoEnvio;
-    }
-
-    public void setCostoEnvio(Integer costoEnvio) {
-        this.costoEnvio = costoEnvio;
-    }
+    public Integer getCostoEnvio() { return costoEnvio; }
+    public void setCostoEnvio(Integer costoEnvio) { this.costoEnvio = costoEnvio; }
 }

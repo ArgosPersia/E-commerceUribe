@@ -1,7 +1,6 @@
 package com.example.E_commerceUribe.controladores;
 
 import com.example.E_commerceUribe.modelos.DTO.ClienteDTO;
-import com.example.E_commerceUribe.modelos.Cliente;
 import com.example.E_commerceUribe.servicios.ClienteServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,8 +21,8 @@ public class ClienteControlador {
 
     @Operation(summary = "Crear un cliente en la BD")
     @PostMapping(produces = "application/json")
-    public ResponseEntity<ClienteDTO> guardar(@RequestBody Cliente datos) {
-        ClienteDTO respuesta = this.servicio.guardarCliente(datos);
+    public ResponseEntity<ClienteDTO> guardar(@RequestBody ClienteDTO datosDTO) {
+        ClienteDTO respuesta = this.servicio.guardarCliente(datosDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
@@ -43,6 +42,7 @@ public class ClienteControlador {
 
     @Operation(summary = "Elimina un cliente de la BD")
     @DeleteMapping(value = "/{id}", produces = "application/json")
+    // CORRECCIÓN: Llama al método correcto
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         this.servicio.eliminarCliente(id);
         return ResponseEntity.noContent().build();
@@ -50,13 +50,15 @@ public class ClienteControlador {
 
     @Operation(summary = "Modifica un cliente en la BD")
     @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<ClienteDTO> modificar(@RequestBody Cliente datos, @PathVariable Integer id) {
-        ClienteDTO respuesta = this.servicio.actualizarCliente(id, datos);
+    // CORRECCIÓN: Recibe ClienteDTO para la actualización
+    public ResponseEntity<ClienteDTO> modificar(@RequestBody ClienteDTO datosDTO, @PathVariable Integer id) {
+        ClienteDTO respuesta = this.servicio.actualizarCliente(id, datosDTO);
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
     @Operation(summary = "Buscar clientes por departamento")
     @GetMapping(value = "/departamento/{departamento}", produces = "application/json")
+    // CORRECCIÓN: Llama al método correcto
     public ResponseEntity<List<ClienteDTO>> buscarPorDepartamento(@PathVariable String departamento) {
         List<ClienteDTO> respuesta = this.servicio.buscarClientesPorDepartamento(departamento);
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);

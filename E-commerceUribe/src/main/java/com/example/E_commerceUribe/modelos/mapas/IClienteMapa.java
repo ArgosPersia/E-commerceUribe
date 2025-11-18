@@ -1,7 +1,7 @@
 package com.example.E_commerceUribe.modelos.mapas;
 
-import com.example.E_commerceUribe.modelos.Cliente;
 import com.example.E_commerceUribe.modelos.DTO.ClienteDTO;
+import com.example.E_commerceUribe.modelos.Cliente;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,12 +10,16 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface IClienteMapa {
 
-    @Mapping( source = "id", target = "id")
-    @Mapping( source = "calificacion", target = "calificacion")
-    @Mapping( source = "referenciapago", target = "referenciapago")
-    @Mapping( source = "departamentoCliente", target = "departamentoCliente")
-    @Mapping( source = "ciudad", target = "ciudad")
+    // 1. DTO a Entidad (Para Guardar)
+    // El 'usuarioId' del DTO se mapeará al ID del objeto Usuario dentro de la Entidad Cliente.
+    @Mapping(source = "usuarioId", target = "usuario.id")
+    Cliente convertir_cliente_dto_a_cliente(ClienteDTO clienteDTO);
+
+    // 2. Entidad a DTO (Para Retornar)
+    // El ID del Usuario se mapea al campo 'usuarioId' del DTO.
+    @Mapping(source = "usuario.id", target = "usuarioId")
     ClienteDTO convertir_cliente_a_clientedto(Cliente cliente);
 
-    List<ClienteDTO> convertir_lista_a_clientedto(List<Cliente> lista);
+    // 3. Lista de Entidad a Lista de DTO
+    List<ClienteDTO> convertir_lista_a_listadto(List<Cliente> lista);
 }

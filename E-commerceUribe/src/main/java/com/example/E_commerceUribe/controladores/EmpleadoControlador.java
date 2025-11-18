@@ -1,9 +1,7 @@
 package com.example.E_commerceUribe.controladores;
 
 import com.example.E_commerceUribe.modelos.DTO.EmpleadoDTO;
-import com.example.E_commerceUribe.modelos.Empleado;
 import com.example.E_commerceUribe.servicios.EmpleadoServicio;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,51 +12,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/empleados")
-@Tag(name = "Controlador para operacion tabla empleados")
+@Tag(name = "Controlador para operaciones tabla empleados")
 public class EmpleadoControlador {
 
     @Autowired
     EmpleadoServicio servicio;
 
-    @Operation(summary = "Crear un empleado en la BD")
-    @PostMapping(produces = "application/json")
-    public ResponseEntity<EmpleadoDTO> guardar(@RequestBody Empleado datos) {
-        EmpleadoDTO respuesta = this.servicio.guardarEmpleado(datos);
-        return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
+    // 1. CREAR EMPLEADO (POST) - ¡Añadido!
+    @PostMapping
+    public ResponseEntity<EmpleadoDTO> guardar(@RequestBody EmpleadoDTO datosDTO) {
+        EmpleadoDTO empleadoNuevo = this.servicio.guardarEmpleado(datosDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(empleadoNuevo);
     }
 
-    @Operation(summary = "Listar todos los empleados guardados en la BD")
-    @GetMapping(produces = "application/json")
+    // 2. MODIFICAR EMPLEADO (PUT) - Ya existía, se mantiene.
+    @PutMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<EmpleadoDTO> modificar(@RequestBody EmpleadoDTO datosDTO, @PathVariable Integer id) {
+        EmpleadoDTO respuesta = this.servicio.actualizarEmpleado(id, datosDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+    }
+
+    // 3. BUSCAR TODOS (GET) - Esencial para la funcionalidad
+    @GetMapping
     public ResponseEntity<List<EmpleadoDTO>> listar() {
-        List<EmpleadoDTO> respuesta = this.servicio.buscarTodosLosEmpleados();
-        return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        List<EmpleadoDTO> lista = this.servicio.buscarTodosLosEmpleados();
+        return ResponseEntity.status(HttpStatus.OK).body(lista);
     }
 
-    @Operation(summary = "Buscar un empleado en la BD")
-    @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<EmpleadoDTO> buscarPorId(@PathVariable Integer id) {
-        EmpleadoDTO respuesta = this.servicio.buscarEmpleadoPorId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(respuesta);
-    }
-
-    @Operation(summary = "Elimina un empleado de la BD")
-    @DeleteMapping(value = "/{id}", produces = "application/json")
+    // 4. ELIMINAR (DELETE) - Esencial para la prueba CRUD
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         this.servicio.eliminarEmpleado(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "Modifica un empleado en la BD")
-    @PutMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<EmpleadoDTO> modificar(@RequestBody Empleado datos, @PathVariable Integer id) {
-        EmpleadoDTO respuesta = this.servicio.actualizarEmpleado(id, datos);
-        return ResponseEntity.status(HttpStatus.OK).body(respuesta);
-    }
-
-    @Operation(summary = "Buscar empleados por sede")
-    @GetMapping(value = "/sede/{sede}", produces = "application/json")
-    public ResponseEntity<List<EmpleadoDTO>> buscarPorSede(@PathVariable String sede) {
-        List<EmpleadoDTO> respuesta = this.servicio.buscarEmpleadosPorSede(sede);
-        return ResponseEntity.status(HttpStatus.OK).body(respuesta);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

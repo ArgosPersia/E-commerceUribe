@@ -4,6 +4,10 @@ import com.example.E_commerceUribe.modelos.Empleado;
 import com.example.E_commerceUribe.modelos.DTO.EmpleadoDTO;
 import com.example.E_commerceUribe.modelos.mapas.IEmpleadoMapa;
 import com.example.E_commerceUribe.repositorios.IEmpleadoRepositorio;
+// <<<< IMPORTACIONES AÑADIDAS >>>>
+import com.example.E_commerceUribe.repositorios.IUsuarioRepositorio;
+import com.example.E_commerceUribe.ayudas.SedeEmpleado;
+// <<<< -------------------- >>>>
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,17 +26,37 @@ public class EmpleadoServicio {
     @Autowired
     private IEmpleadoMapa empleadoMapa;
 
-    public EmpleadoDTO guardarEmpleado(Empleado datosEmpleado) {
+    // <<<< REPOSITORIO DE USUARIO AÑADIDO PARA LA VALIDACIÓN >>>>
+    @Autowired
+    private IUsuarioRepositorio usuarioRepositorio;
+    // <<<< ------------------------------------------------->>>>
+
+    // 1. MÉTODO GUARDAR EMPLEADO (POST)
+    // <<<< CAMBIO: Recibe EmpleadoDTO en lugar de Entidad Empleado >>>>
+    public EmpleadoDTO guardarEmpleado(EmpleadoDTO datosDTO) {
+
+        // 1. Convertir DTO a Entidad
+        Empleado empleado = this.empleadoMapa.convertir_empleado_dto_a_empleado(datosDTO);
+
         // Validación de salario positivo
-        if (datosEmpleado.getSalario() == null || datosEmpleado.getSalario() <= 0) {
+        if (empleado.getSalario() == null || empleado.getSalario() <= 0) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "El salario debe ser mayor a 0"
             );
         }
 
+        // Validación de Usuario existente (Crucial para el FK)
+        if (empleado.getUsuario() == null || empleado.getUsuario().getId() == null ||
+                !usuarioRepositorio.existsById(empleado.getUsuario().getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El ID de usuario proporcionado para el empleado no existe."
+            );
+        }
+
         // Guardar empleado
-        Empleado empleadoGuardado = this.repositorio.save(datosEmpleado);
+        Empleado empleadoGuardado = this.repositorio.save(empleado);
         if (empleadoGuardado == null) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -44,7 +68,7 @@ public class EmpleadoServicio {
         return this.empleadoMapa.convertir_empleado_a_empleadodto(empleadoGuardado);
     }
 
-    //----- Funciones nuevas -----
+    //----- Funciones existentes -----
 
     // Buscar todos los empleados
     public List<EmpleadoDTO> buscarTodosLosEmpleados() {
@@ -54,29 +78,24 @@ public class EmpleadoServicio {
 
     // Buscar un empleado por ID
     public EmpleadoDTO buscarEmpleadoPorId(Integer id) {
-        Optional<Empleado> empleadoOpcional = this.repositorio.findById(id);
-        if (!empleadoOpcional.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontró ningún empleado con el id " + id
-            );
-        }
-        Empleado empleadoEncontrado = empleadoOpcional.get();
+        Empleado empleadoEncontrado = this.repositorio.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No se encontró ningún empleado con el id " + id)
+                );
         return this.empleadoMapa.convertir_empleado_a_empleadodto(empleadoEncontrado);
     }
 
     // Eliminar empleado
     public void eliminarEmpleado(Integer id) {
-        Optional<Empleado> empleadoOpcional = this.repositorio.findById(id);
-        if (!empleadoOpcional.isPresent()) {
+        if (!this.repositorio.existsById(id)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "No se encontró el empleado con el id " + id
             );
         }
-        Empleado empleadoEncontrado = empleadoOpcional.get();
         try {
-            this.repositorio.delete(empleadoEncontrado);
+            this.repositorio.deleteById(id); // Cambiado a deleteById para mayor eficiencia
         } catch (Exception error) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -85,46 +104,46 @@ public class EmpleadoServicio {
         }
     }
 
-    // Actualizar datos de un empleado
-    public EmpleadoDTO actualizarEmpleado(Integer id, Empleado datosActualizados) {
-        Optional<Empleado> empleadoOpcional = this.repositorio.findById(id);
-        if (!empleadoOpcional.isPresent()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "No se encontró el empleado con el id " + id
-            );
-        }
-        Empleado empleadoEncontrado = empleadoOpcional.get();
+    // 2. MÉTODO ACTUALIZAR EMPLEADO (PUT)
+    // <<<< CAMBIO: Recibe EmpleadoDTO en lugar de Entidad Empleado >>>>
+    public EmpleadoDTO actualizarEmpleado(Integer id, EmpleadoDTO datosDTO) {
+        Empleado empleadoEncontrado = this.repositorio.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No se encontró el empleado con el id " + id)
+                );
+
+        // 1. Convertir el DTO para obtener la entidad con los nuevos datos
+        Empleado datosActualizados = this.empleadoMapa.convertir_empleado_dto_a_empleado(datosDTO);
 
         // Actualizar los campos permitidos
-        // Cargo
         empleadoEncontrado.setCargoEmpleado(datosActualizados.getCargoEmpleado());
-        // Salario
         empleadoEncontrado.setSalario(datosActualizados.getSalario());
-        // Sede
         empleadoEncontrado.setSedeEmpleado(datosActualizados.getSedeEmpleado());
 
         // Guardar en la base de datos
         Empleado empleadoActualizado = this.repositorio.save(empleadoEncontrado);
-        if (empleadoActualizado == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el empleado en la base de datos"
-            );
-        }
+
+        // Retornar DTO
         return this.empleadoMapa.convertir_empleado_a_empleadodto(empleadoActualizado);
     }
 
-    // Buscar empleados por sede
+    // 3. MÉTODO BUSCAR POR SEDE
     public List<EmpleadoDTO> buscarEmpleadosPorSede(String sede) {
-        List<Empleado> todosLosEmpleados = this.repositorio.findAll();
-        List<Empleado> empleadosPorSede = new ArrayList<>();
+        // <<<< CORRECCIÓN: Usar el repositorio directamente después de la conversión del Enum >>>>
 
-        for (Empleado empleado : todosLosEmpleados) {
-            if (empleado.getSedeEmpleado().toString().equals(sede)) {
-                empleadosPorSede.add(empleado);
-            }
+        SedeEmpleado sedeEnum;
+        try {
+            sedeEnum = SedeEmpleado.valueOf(sede.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El valor de sede '" + sede + "' no es válido."
+            );
         }
+
+        // Usar el método del repositorio que ya existe
+        List<Empleado> empleadosPorSede = this.repositorio.findBySedeEmpleado(sedeEnum);
 
         if (empleadosPorSede.isEmpty()) {
             throw new ResponseStatusException(

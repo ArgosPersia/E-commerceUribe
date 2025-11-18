@@ -2,7 +2,6 @@ package com.example.E_commerceUribe.modelos;
 
 import com.example.E_commerceUribe.ayudas.CargoEmpleado;
 import com.example.E_commerceUribe.ayudas.SedeEmpleado;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,47 +25,28 @@ public class Empleado {
 
     @OneToOne
     @JoinColumn(name = "fk_usuario", referencedColumnName = "id")
-    @JsonManagedReference(value = "relacionempleadousuario")
     private Usuario usuario;
+
     public Empleado() {
     }
 
-    public Empleado(Integer id, CargoEmpleado cargoEmpleado, Integer salario, SedeEmpleado sedeEmpleado) {
-        this.id = id;
+    // Constructor recomendado para inicialización (aunque JPA usa el constructor vacío)
+    public Empleado(CargoEmpleado cargoEmpleado, Integer salario, SedeEmpleado sedeEmpleado, Usuario usuario) {
         this.cargoEmpleado = cargoEmpleado;
         this.salario = salario;
         this.sedeEmpleado = sedeEmpleado;
+        this.usuario = usuario;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public CargoEmpleado getCargoEmpleado() {
-        return cargoEmpleado;
-    }
-
-    public void setCargoEmpleado(CargoEmpleado cargoEmpleado) {
-        this.cargoEmpleado = cargoEmpleado;
-    }
-
-    public Integer getSalario() {
-        return salario;
-    }
-
-    public void setSalario(Integer salario) {
-        this.salario = salario;
-    }
-
-    public SedeEmpleado getSedeEmpleado() {
-        return sedeEmpleado;
-    }
-
-    public void setSedeEmpleado(SedeEmpleado sedeEmpleado) {
-        this.sedeEmpleado = sedeEmpleado;
-    }
+    // Getters y Setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public CargoEmpleado getCargoEmpleado() { return cargoEmpleado; }
+    public void setCargoEmpleado(CargoEmpleado cargoEmpleado) { this.cargoEmpleado = cargoEmpleado; }
+    public Integer getSalario() { return salario; }
+    public void setSalario(Integer salario) { this.salario = salario; }
+    public SedeEmpleado getSedeEmpleado() { return sedeEmpleado; }
+    public void setSedeEmpleado(SedeEmpleado sedeEmpleado) { this.sedeEmpleado = sedeEmpleado; }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 }

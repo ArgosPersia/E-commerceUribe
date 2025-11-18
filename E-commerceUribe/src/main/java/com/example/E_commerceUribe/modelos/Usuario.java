@@ -2,6 +2,7 @@ package com.example.E_commerceUribe.modelos;
 
 import com.example.E_commerceUribe.ayudas.EstadosUsuario;
 import com.example.E_commerceUribe.ayudas.TipoDocumento;
+import com.fasterxml.jackson.annotation.JsonIgnore; // Importar esta!
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -38,10 +39,12 @@ public class Usuario {
 
     // Relación con Cliente
     @OneToOne(mappedBy = "usuario")
+    @JsonIgnore // <-- CORRECCIÓN: Evita el ciclo de serialización
     private Cliente cliente;
 
     // Relación con Empleado
     @OneToOne(mappedBy = "usuario")
+    @JsonIgnore // <-- CORRECCIÓN: Evita el ciclo de serialización
     private Empleado empleado;
 
     public Usuario() {}
@@ -57,83 +60,28 @@ public class Usuario {
         this.tipoDocumento = tipoDocumento;
     }
 
-    public Integer getId() {
-        return id;
-    }
+    // Getters y Setters existentes...
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getNombres() { return nombres; }
+    public void setNombres(String nombres) { this.nombres = nombres; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public String getContraseña() { return contraseña; }
+    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
+    public EstadosUsuario getEstado() { return estado; }
+    public void setEstado(EstadosUsuario estado) { this.estado = estado; }
+    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public TipoDocumento getTipoDocumento() { return tipoDocumento; }
+    public void setTipoDocumento(TipoDocumento tipoDocumento) { this.tipoDocumento = tipoDocumento; }
+    public String getDocumento() { return documento; }
+    public void setDocumento(String documento) { this.documento = documento; }
 
-    public String getNombres() {
-        return nombres;
-    }
-
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
-
-    public EstadosUsuario getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadosUsuario estado) {
-        this.estado = estado;
-    }
-
-    public LocalDate getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public TipoDocumento getTipoDocumento() {
-        return tipoDocumento;
-    }
-
-    public void setTipoDocumento(TipoDocumento tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
-
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public Empleado getEmpleado() {
-        return empleado;
-    }
-
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
-    }
+    // Getters y Setters de relaciones
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public Empleado getEmpleado() { return empleado; }
+    public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
 }

@@ -9,46 +9,32 @@ public class EmpleadoDTO {
     private CargoEmpleado cargoEmpleado;
     private Integer salario;
     private SedeEmpleado sedeEmpleado;
+    private Integer usuarioId; // <-- ¡Añadido para la relación!
 
     public EmpleadoDTO() {
     }
 
-    public EmpleadoDTO(CargoEmpleado cargoEmpleado, Integer salario, SedeEmpleado sedeEmpleado, Integer id) {
+    // Constructor para POST/PUT (sin ID)
+    public EmpleadoDTO(CargoEmpleado cargoEmpleado, Integer salario, SedeEmpleado sedeEmpleado, Integer usuarioId) {
         this.cargoEmpleado = cargoEmpleado;
         this.salario = salario;
         this.sedeEmpleado = sedeEmpleado;
-        this.id = id;
+        this.usuarioId = usuarioId;
     }
 
-    public CargoEmpleado getCargoEmpleado() {
-        return cargoEmpleado;
-    }
+    // Getters y Setters completos
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    public void setCargoEmpleado(CargoEmpleado cargoEmpleado) {
-        this.cargoEmpleado = cargoEmpleado;
-    }
+    public Integer getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(Integer usuarioId) { this.usuarioId = usuarioId; }
 
-    public Integer getSalario() {
-        return salario;
-    }
+    public CargoEmpleado getCargoEmpleado() { return cargoEmpleado; }
+    public void setCargoEmpleado(CargoEmpleado cargoEmpleado) { this.cargoEmpleado = cargoEmpleado; }
 
-    public void setSalario(Integer salario) {
-        this.salario = salario;
-    }
+    public Integer getSalario() { return salario; }
+    public void setSalario(Integer salario) { this.salario = salario; }
 
-    public SedeEmpleado getSedeEmpleado() {
-        return sedeEmpleado;
-    }
-
-    public void setSedeEmpleado(SedeEmpleado sedeEmpleado) {
-        this.sedeEmpleado = sedeEmpleado;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public SedeEmpleado getSedeEmpleado() { return sedeEmpleado; }
+    public void setSedeEmpleado(SedeEmpleado sedeEmpleado) { this.sedeEmpleado = sedeEmpleado; }
 }

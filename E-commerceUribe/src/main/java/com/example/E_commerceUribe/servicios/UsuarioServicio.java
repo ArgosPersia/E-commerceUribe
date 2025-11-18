@@ -1,7 +1,6 @@
 package com.example.E_commerceUribe.servicios;
 
 import com.example.E_commerceUribe.modelos.DTO.UsuarioDTO;
-import com.example.E_commerceUribe.modelos.DTO.UsuarioEspecialDTO;
 import com.example.E_commerceUribe.modelos.Usuario;
 import com.example.E_commerceUribe.modelos.mapas.IUsuarioMapa;
 import com.example.E_commerceUribe.repositorios.IUsuarioRepositorio;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +21,11 @@ public class UsuarioServicio {
     @Autowired
     private IUsuarioMapa usuarioMapa;
 
-    public UsuarioDTO guardarUsuario(Usuario datosUsuario) {
+    // MÉTODO GUARDAR CORREGIDO: Acepta DTO, convierte a Entidad para guardar.
+    public UsuarioDTO guardarUsuario(UsuarioDTO datosDTO) {
+
+        // CONVERSIÓN DTO a Entidad (Usuario)
+        Usuario datosUsuario = this.usuarioMapa.convertir_usuario_dto_a_usuario(datosDTO);
 
         // Validación: correo duplicado
         if (this.repositorio.findByCorreo(datosUsuario.getCorreo()).isPresent()) {
@@ -42,7 +44,8 @@ public class UsuarioServicio {
         }
 
         // Validación: longitud mínima de contraseña
-        if (datosUsuario.getContraseña().length() < 6) {
+        // Importante: La contraseña debe estar en la Entidad para que esta validación funcione
+        if (datosUsuario.getContraseña() == null || datosUsuario.getContraseña().length() < 6) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "La contraseña debe tener al menos 6 caracteres"
@@ -63,12 +66,11 @@ public class UsuarioServicio {
         return this.usuarioMapa.convertir_usuario_a_usuariodto(usuarioGuardado);
     }
 
-    //----- Funciones nuevas-----
-    // Buscar todos los usuarios - (Todas las funciones son públicas y cualquier servicio me ha de entregar un dto)
+    //----- Funciones existentes-----
 
     public List<UsuarioDTO> buscarListaDeUsuarios(){
-    List<Usuario> listaDeUsuarios = this.repositorio.findAll();
-    return this.usuarioMapa.convetir_lista_a_listadto(listaDeUsuarios);
+        List<Usuario> listaDeUsuarios = this.repositorio.findAll();
+        return this.usuarioMapa.convetir_lista_a_listadto(listaDeUsuarios);
     }
 
     // Buscar un usuario por ID
@@ -98,12 +100,13 @@ public class UsuarioServicio {
             this.repositorio.delete(usuarioEncontrado);
         }catch (Exception error){
             throw new ResponseStatusException(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              "Error al eliminar el usuario con el id, "+error.getMessage()
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al eliminar el usuario con el id, "+error.getMessage()
             );
         }
     }
     // Modificador algunos datos de un usuario
+    // NOTA: Para ser consistente, este método también debería recibir UsuarioDTO
     public UsuarioDTO actualizarUsuario(Integer id,  Usuario datosActualizados) {
         Optional<Usuario> usuarioOpcional = this.repositorio.findById(id);
         if (!usuarioOpcional.isPresent()) {
