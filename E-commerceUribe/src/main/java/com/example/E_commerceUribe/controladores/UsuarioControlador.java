@@ -20,9 +20,7 @@ public class UsuarioControlador {
     @Autowired
     UsuarioServicio servicio;
 
-    // GUARDAR (POST) - MÉTODO CORREGIDO
-    // ----------------------------------------------------------------------
-    // CAMBIO CLAVE: El parámetro de entrada debe ser UsuarioDTO, NO la entidad Usuario.
+    // Guardar
     @Operation(summary = "Crear un usuario en la BD")
     @PostMapping (produces = "application/json")
     public ResponseEntity<UsuarioDTO>guardar(@RequestBody UsuarioDTO datosDTO){
@@ -30,7 +28,7 @@ public class UsuarioControlador {
         UsuarioDTO respuesta = this.servicio.guardarUsuario(datosDTO);
         return  ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
-    // ----------------------------------------------------------------------
+
 
     //listarTodos
     @Operation(summary = "Listar todos los usuarios guardados en la BD")

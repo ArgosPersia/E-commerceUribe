@@ -22,6 +22,7 @@ public class PedidoControlador {
     @Autowired
     PedidoServicio servicio;
 
+    //Crear un pedido
     @Operation(summary = "Crear un pedido en la BD")
     @PostMapping(produces = "application/json")
     public ResponseEntity<PedidoDTO> guardar(@RequestBody Pedido datos) {
@@ -29,6 +30,7 @@ public class PedidoControlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
+    //Lista de los pedidos
     @Operation(summary = "Listar todos los pedidos guardados en la BD")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<PedidoDTO>> listar() {
@@ -36,6 +38,7 @@ public class PedidoControlador {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
+    //Busca un pedido por id
     @Operation(summary = "Buscar un pedido en la BD")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<PedidoDTO> buscarPorId(@PathVariable Integer id) {
@@ -43,6 +46,7 @@ public class PedidoControlador {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
+    // Elimina un pedido
     @Operation(summary = "Elimina un pedido de la BD")
     @DeleteMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
@@ -50,6 +54,7 @@ public class PedidoControlador {
         return ResponseEntity.noContent().build();
     }
 
+    //Modifica un pedido
     @Operation(summary = "Modifica un pedido en la BD")
     @PutMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<PedidoDTO> modificar(@RequestBody Pedido datos, @PathVariable Integer id) {
@@ -57,6 +62,7 @@ public class PedidoControlador {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
+    //Buscar un pedido por fecha
     @Operation(summary = "Buscar pedidos por fecha")
     @GetMapping(value = "/fecha/{fecha}", produces = "application/json")
     public ResponseEntity<List<PedidoDTO>> buscarPorFecha(

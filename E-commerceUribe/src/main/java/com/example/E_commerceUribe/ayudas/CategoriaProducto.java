@@ -9,5 +9,8 @@ public enum CategoriaProducto {
     Chaquetas,
     Polo,
     Bermuda,
-    Accesorio
+    Accesorio,
+    Electronicos,
+    Accesorios
+
 }

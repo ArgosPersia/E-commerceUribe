@@ -19,6 +19,7 @@ public class ClienteControlador {
     @Autowired
     ClienteServicio servicio;
 
+    //Crear un cliente
     @Operation(summary = "Crear un cliente en la BD")
     @PostMapping(produces = "application/json")
     public ResponseEntity<ClienteDTO> guardar(@RequestBody ClienteDTO datosDTO) {
@@ -26,6 +27,7 @@ public class ClienteControlador {
         return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
     }
 
+    //Lista de todos los clientes
     @Operation(summary = "Listar todos los clientes guardados en la BD")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<ClienteDTO>> listar() {
@@ -33,6 +35,7 @@ public class ClienteControlador {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
+    //Buscar un cliente por id
     @Operation(summary = "Buscar un cliente en la BD")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ClienteDTO> buscarPorId(@PathVariable Integer id) {
@@ -40,6 +43,7 @@ public class ClienteControlador {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
+    //Eliminar
     @Operation(summary = "Elimina un cliente de la BD")
     @DeleteMapping(value = "/{id}", produces = "application/json")
     // CORRECCIÓN: Llama al método correcto
@@ -48,6 +52,7 @@ public class ClienteControlador {
         return ResponseEntity.noContent().build();
     }
 
+    //Modifcar un cliente
     @Operation(summary = "Modifica un cliente en la BD")
     @PutMapping(value = "/{id}", produces = "application/json")
     // CORRECCIÓN: Recibe ClienteDTO para la actualización
@@ -56,6 +61,7 @@ public class ClienteControlador {
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
     }
 
+    //Buscar cliente por departamento
     @Operation(summary = "Buscar clientes por departamento")
     @GetMapping(value = "/departamento/{departamento}", produces = "application/json")
     // CORRECCIÓN: Llama al método correcto

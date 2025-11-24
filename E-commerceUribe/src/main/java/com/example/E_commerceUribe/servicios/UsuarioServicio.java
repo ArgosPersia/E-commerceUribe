@@ -30,7 +30,7 @@ public class UsuarioServicio {
         // Validación: correo duplicado
         if (this.repositorio.findByCorreo(datosUsuario.getCorreo()).isPresent()) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
+                    HttpStatus.CONFLICT ,
                     "Ya existe un usuario con ese correo"
             );
         }
