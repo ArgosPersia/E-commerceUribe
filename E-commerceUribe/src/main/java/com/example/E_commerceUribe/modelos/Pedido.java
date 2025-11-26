@@ -30,7 +30,7 @@ public class Pedido {
     @JsonManagedReference(value = "relacionpedidoproducto")
     private List<Producto> productos;
 
-    // 🔑 CORRECCIÓN CLAVE: Un pedido pertenece a un cliente
+
     @ManyToOne
     @JoinColumn(name = "fk_cliente") // Columna de clave foránea en la tabla 'pedido'
     private Cliente cliente;
@@ -46,7 +46,7 @@ public class Pedido {
         this.costoEnvio = costoEnvio;
     }
 
-    // Getters y Setters
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public Integer getMontoTotal() { return montoTotal; }
@@ -57,8 +57,6 @@ public class Pedido {
     public void setFechaEntrega(LocalDate fechaEntrega) { this.fechaEntrega = fechaEntrega; }
     public Integer getCostoEnvio() { return costoEnvio; }
     public void setCostoEnvio(Integer costoEnvio) { this.costoEnvio = costoEnvio; }
-
-    // Getter y Setter para Cliente
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
 }

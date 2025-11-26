@@ -12,14 +12,13 @@ public class PedidoDTO {
     public PedidoDTO() {
     }
 
-    // Constructor corregido: NO INCLUYE el ID (para la operación POST/Creación)
     public PedidoDTO(Integer montoTotal, LocalDate fechaEntrega, Integer costoEnvio) {
         this.montoTotal = montoTotal;
         this.fechaEntrega = fechaEntrega;
         this.costoEnvio = costoEnvio;
     }
 
-    // Getters y Setters completos
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

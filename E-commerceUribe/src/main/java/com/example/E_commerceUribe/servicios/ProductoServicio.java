@@ -44,7 +44,7 @@ public class ProductoServicio {
         return this.productoMapa.convertir_producto_a_productodto(productoGuardado);
     }
 
-    //----- Funciones nuevas -----
+    //----- Funciones-----
 
     // Buscar todos los productos
     public List<ProductoDTO> buscarTodosLosProductos() {

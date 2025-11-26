@@ -12,7 +12,6 @@ import java.util.List;
 public interface IPedidoMapa {
 
     @Mapping( source = "id", target = "id")
-    // CORRECCIÓN CLAVE: El source debe ser 'montoTotal' (sin la 'n' en "monton")
     @Mapping( source = "montoTotal", target = "montoTotal")
     @Mapping( source = "fechaEntrega", target = "fechaEntrega")
     @Mapping( source = "costoEnvio", target = "costoEnvio")

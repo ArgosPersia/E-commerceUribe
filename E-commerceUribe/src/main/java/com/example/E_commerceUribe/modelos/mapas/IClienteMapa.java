@@ -11,12 +11,11 @@ import java.util.List;
 public interface IClienteMapa {
 
     // 1. DTO a Entidad (Para Guardar)
-    // El 'usuarioId' del DTO se mapeará al ID del objeto Usuario dentro de la Entidad Cliente.
     @Mapping(source = "usuarioId", target = "usuario.id")
     Cliente convertir_cliente_dto_a_cliente(ClienteDTO clienteDTO);
 
     // 2. Entidad a DTO (Para Retornar)
-    // El ID del Usuario se mapea al campo 'usuarioId' del DTO.
+
     @Mapping(source = "usuario.id", target = "usuarioId")
     ClienteDTO convertir_cliente_a_clientedto(Cliente cliente);
 

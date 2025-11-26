@@ -7,21 +7,17 @@ import com.example.E_commerceUribe.ayudas.TipoDocumento;
 import java.time.LocalDate;
 
 public class UsuarioDTO {
-    // Campos existentes
     private String nombres;
     private EstadosUsuario estado;
     private String correo;
     private LocalDate fechaNacimiento;
     private String documento;
-
-    // CAMPOS AÑADIDOS
     private String contraseña;
     private TipoDocumento tipoDocumento;
 
     public UsuarioDTO() {
     }
 
-    // Constructor actualizado
     public UsuarioDTO(String nombres, EstadosUsuario estado, String correo, LocalDate fechaNacimiento, String documento, String contraseña, TipoDocumento tipoDocumento) {
         this.nombres = nombres;
         this.estado = estado;
@@ -32,7 +28,6 @@ public class UsuarioDTO {
         this.tipoDocumento = tipoDocumento; // Nuevo
     }
 
-    // --- Getters y Setters existentes ---
     public String getNombres() { return nombres; }
     public void setNombres(String nombres) { this.nombres = nombres; }
 
@@ -47,8 +42,6 @@ public class UsuarioDTO {
 
     public String getDocumento() { return documento; }
     public void setDocumento(String documento) { this.documento = documento; }
-
-    // --- NUEVOS Getters y Setters ---
 
     public String getContraseña() {
         return contraseña;

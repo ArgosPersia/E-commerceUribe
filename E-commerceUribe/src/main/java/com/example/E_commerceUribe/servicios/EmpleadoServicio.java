@@ -26,13 +26,12 @@ public class EmpleadoServicio {
     @Autowired
     private IEmpleadoMapa empleadoMapa;
 
-    // <<<< REPOSITORIO DE USUARIO AÑADIDO PARA LA VALIDACIÓN >>>>
+
     @Autowired
     private IUsuarioRepositorio usuarioRepositorio;
-    // <<<< ------------------------------------------------->>>>
+
 
     // 1. MÉTODO GUARDAR EMPLEADO (POST)
-    // <<<< CAMBIO: Recibe EmpleadoDTO en lugar de Entidad Empleado >>>>
     public EmpleadoDTO guardarEmpleado(EmpleadoDTO datosDTO) {
 
         // 1. Convertir DTO a Entidad
@@ -68,7 +67,7 @@ public class EmpleadoServicio {
         return this.empleadoMapa.convertir_empleado_a_empleadodto(empleadoGuardado);
     }
 
-    //----- Funciones existentes -----
+    //----- Funciones -----
 
     // Buscar todos los empleados
     public List<EmpleadoDTO> buscarTodosLosEmpleados() {
@@ -105,7 +104,7 @@ public class EmpleadoServicio {
     }
 
     // 2. MÉTODO ACTUALIZAR EMPLEADO (PUT)
-    // <<<< CAMBIO: Recibe EmpleadoDTO en lugar de Entidad Empleado >>>>
+
     public EmpleadoDTO actualizarEmpleado(Integer id, EmpleadoDTO datosDTO) {
         Empleado empleadoEncontrado = this.repositorio.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -130,7 +129,6 @@ public class EmpleadoServicio {
 
     // 3. MÉTODO BUSCAR POR SEDE
     public List<EmpleadoDTO> buscarEmpleadosPorSede(String sede) {
-        // <<<< CORRECCIÓN: Usar el repositorio directamente después de la conversión del Enum >>>>
 
         SedeEmpleado sedeEnum;
         try {

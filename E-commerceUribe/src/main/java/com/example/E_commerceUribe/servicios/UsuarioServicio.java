@@ -44,7 +44,6 @@ public class UsuarioServicio {
         }
 
         // Validación: longitud mínima de contraseña
-        // Importante: La contraseña debe estar en la Entidad para que esta validación funcione
         if (datosUsuario.getContraseña() == null || datosUsuario.getContraseña().length() < 6) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -66,7 +65,7 @@ public class UsuarioServicio {
         return this.usuarioMapa.convertir_usuario_a_usuariodto(usuarioGuardado);
     }
 
-    //----- Funciones existentes-----
+    //----- Funciones-----
 
     public List<UsuarioDTO> buscarListaDeUsuarios(){
         List<Usuario> listaDeUsuarios = this.repositorio.findAll();

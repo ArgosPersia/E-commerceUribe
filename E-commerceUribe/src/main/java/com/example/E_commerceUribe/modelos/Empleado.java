@@ -30,7 +30,7 @@ public class Empleado {
     public Empleado() {
     }
 
-    // Constructor recomendado para inicialización (aunque JPA usa el constructor vacío)
+
     public Empleado(CargoEmpleado cargoEmpleado, Integer salario, SedeEmpleado sedeEmpleado, Usuario usuario) {
         this.cargoEmpleado = cargoEmpleado;
         this.salario = salario;
@@ -38,7 +38,7 @@ public class Empleado {
         this.usuario = usuario;
     }
 
-    // Getters y Setters
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public CargoEmpleado getCargoEmpleado() { return cargoEmpleado; }

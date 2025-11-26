@@ -34,7 +34,7 @@ public class Producto {
     @Column (name = "aplicaDescuento", nullable = false, unique = false, length = 6)
     private Boolean aplicaDescuento;
 
-    //RELACION CON PEDIDO
+
     @ManyToOne
     @JoinColumn(name = "fk_pedido", referencedColumnName = "id")
     @JsonBackReference(value = "relacionpedidoproducto")

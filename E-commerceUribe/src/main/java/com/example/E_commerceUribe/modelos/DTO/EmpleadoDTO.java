@@ -9,12 +9,12 @@ public class EmpleadoDTO {
     private CargoEmpleado cargoEmpleado;
     private Integer salario;
     private SedeEmpleado sedeEmpleado;
-    private Integer usuarioId; // <-- ¡Añadido para la relación!
+    private Integer usuarioId;
 
     public EmpleadoDTO() {
     }
 
-    // Constructor para POST/PUT (sin ID)
+
     public EmpleadoDTO(CargoEmpleado cargoEmpleado, Integer salario, SedeEmpleado sedeEmpleado, Integer usuarioId) {
         this.cargoEmpleado = cargoEmpleado;
         this.salario = salario;
@@ -22,7 +22,6 @@ public class EmpleadoDTO {
         this.usuarioId = usuarioId;
     }
 
-    // Getters y Setters completos
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 

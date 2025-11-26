@@ -28,13 +28,10 @@ public class Cliente {
     @Column(name = "ciudad", nullable = false, length = 50)
     private String ciudad;
 
-    // Relación con Usuario
-    // AÑADIMOS CascadeType.REMOVE para asegurar que el OneToOne se maneje correctamente en la eliminación.
     @OneToOne(cascade = CascadeType.REMOVE) // <--- ¡CAMBIO APLICADO!
     @JoinColumn(name = "fk_usuario")
     private Usuario usuario;
 
-    // Relación con Pedidos (ya tenía la cascada correcta)
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos;
 
@@ -51,7 +48,7 @@ public class Cliente {
         this.usuario = usuario;
     }
 
-    // Getters y Setters
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public String getDireccion() { return direccion; }

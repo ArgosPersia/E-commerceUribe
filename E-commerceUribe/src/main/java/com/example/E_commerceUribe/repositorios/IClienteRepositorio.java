@@ -8,13 +8,6 @@ import java.util.List; // 👈 Cambié Optional por List, ya que el controlador 
 import java.util.Optional;
 
 public interface IClienteRepositorio extends JpaRepository<Cliente, Integer> {
-
-    // SOLUCIÓN: Usar 'findBy' seguido del nombre exacto de la propiedad (DepartamentoCliente)
     List<Cliente> findByDepartamentoCliente(DepartamentoCliente departamentoCliente);
 
-    // Si tu servicio realmente necesita un Optional:
-    // Optional<Cliente> findFirstByDepartamentoCliente(DepartamentoCliente departamentoCliente);
-
-    // **NOTA:** Es más común que la búsqueda por un campo que no es ID devuelva una lista,
-    // ya que puede haber varios clientes en el mismo departamento.
 }

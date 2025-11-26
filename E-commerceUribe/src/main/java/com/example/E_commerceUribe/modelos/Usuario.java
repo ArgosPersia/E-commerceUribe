@@ -37,12 +37,12 @@ public class Usuario {
     @Column(name="documento", nullable = false, unique = true, length = 12)
     private String documento;
 
-    // Relación con Cliente
+
     @OneToOne(mappedBy = "usuario")
     @JsonIgnore // <-- CORRECCIÓN: Evita el ciclo de serialización
     private Cliente cliente;
 
-    // Relación con Empleado
+
     @OneToOne(mappedBy = "usuario")
     @JsonIgnore // <-- CORRECCIÓN: Evita el ciclo de serialización
     private Empleado empleado;
@@ -60,7 +60,7 @@ public class Usuario {
         this.tipoDocumento = tipoDocumento;
     }
 
-    // Getters y Setters existentes...
+
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }

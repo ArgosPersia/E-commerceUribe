@@ -5,12 +5,12 @@ import com.example.E_commerceUribe.ayudas.DepartamentoCliente;
 public class ClienteDTO {
 
     private Integer id;
-    private String direccion; // <-- ¡AÑADIDO!
+    private String direccion;
     private Double calificacion;
     private String referenciaPago;
     private DepartamentoCliente departamentoCliente;
     private String ciudad;
-    private Integer usuarioId; // <-- Para retornar el ID del usuario en el DTO de salida
+    private Integer usuarioId;
 
     public ClienteDTO() {
     }

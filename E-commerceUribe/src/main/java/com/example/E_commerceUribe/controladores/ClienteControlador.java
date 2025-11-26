@@ -46,7 +46,6 @@ public class ClienteControlador {
     //Eliminar
     @Operation(summary = "Elimina un cliente de la BD")
     @DeleteMapping(value = "/{id}", produces = "application/json")
-    // CORRECCIÓN: Llama al método correcto
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         this.servicio.eliminarCliente(id);
         return ResponseEntity.noContent().build();
@@ -55,7 +54,6 @@ public class ClienteControlador {
     //Modifcar un cliente
     @Operation(summary = "Modifica un cliente en la BD")
     @PutMapping(value = "/{id}", produces = "application/json")
-    // CORRECCIÓN: Recibe ClienteDTO para la actualización
     public ResponseEntity<ClienteDTO> modificar(@RequestBody ClienteDTO datosDTO, @PathVariable Integer id) {
         ClienteDTO respuesta = this.servicio.actualizarCliente(id, datosDTO);
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);
@@ -64,7 +62,6 @@ public class ClienteControlador {
     //Buscar cliente por departamento
     @Operation(summary = "Buscar clientes por departamento")
     @GetMapping(value = "/departamento/{departamento}", produces = "application/json")
-    // CORRECCIÓN: Llama al método correcto
     public ResponseEntity<List<ClienteDTO>> buscarPorDepartamento(@PathVariable String departamento) {
         List<ClienteDTO> respuesta = this.servicio.buscarClientesPorDepartamento(departamento);
         return ResponseEntity.status(HttpStatus.OK).body(respuesta);

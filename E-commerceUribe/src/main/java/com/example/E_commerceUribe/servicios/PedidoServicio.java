@@ -45,7 +45,7 @@ public class PedidoServicio {
         return this.pedidoMapa.convertir_pedido_a_pedidodto(pedidoGuardado);
     }
 
-    //----- Funciones nuevas -----
+    //----- Funciones -----
 
     // Buscar todos los pedidos
     public List<PedidoDTO> buscarTodosLosPedidos() {

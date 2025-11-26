@@ -57,7 +57,7 @@ public class UsuarioControlador {
     //modificar
     @Operation(summary = "Modifica un usuario en la BD")
     @PutMapping (value = "/{id}" , produces = "application/json")
-    // POSIBLE CAMBIO: También deberías recibir UsuarioDTO aquí si quieres usar la misma lógica de mapeo.
+
     public ResponseEntity<UsuarioDTO>modificar(@RequestBody Usuario datos, @PathVariable Integer id){
         UsuarioDTO respuesta = this.servicio.actualizarUsuario(id, datos);
         return   ResponseEntity.status(HttpStatus.OK).body(respuesta);
