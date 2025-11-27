@@ -38,7 +38,8 @@ public class Producto {
     @ManyToOne
     @JoinColumn(name = "fk_pedido", referencedColumnName = "id")
     @JsonBackReference(value = "relacionpedidoproducto")
-    private Pedido pedido;
+    private Pedido pedido; // Atributo de relación
+
     public Producto() {
     }
 
@@ -116,6 +117,13 @@ public class Producto {
     public void setAplicaDescuento(Boolean aplicaDescuento) {
         this.aplicaDescuento = aplicaDescuento;
     }
+
+    // 💡 MÉTODOS DE ACCESO FALTANTES (CAUSA DEL ERROR EN EL SERVICIO)
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
 }
-
-

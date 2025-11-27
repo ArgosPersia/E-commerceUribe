@@ -104,6 +104,9 @@ public class ProductoServicio {
         // Descripción
         productoEncontrado.setDescripcion(datosActualizados.getDescripcion());
 
+        // en la entidad existente, evitando la duplicación.
+        productoEncontrado.setPedido(datosActualizados.getPedido());
+
         // Guardar en la base de datos
         Producto productoActualizado = this.repositorio.save(productoEncontrado);
         if (productoActualizado == null) {

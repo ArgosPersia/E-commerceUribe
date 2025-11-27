@@ -59,4 +59,5 @@ public class Pedido {
     public void setCostoEnvio(Integer costoEnvio) { this.costoEnvio = costoEnvio; }
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
 }

@@ -86,7 +86,7 @@ public class PedidoServicio {
         }
     }
 
-    // Actualizar fecha de entrega de un pedido
+    // Actualizar datos de un pedido
     public PedidoDTO actualizarPedido(Integer id, Pedido datosActualizados) {
         Optional<Pedido> pedidoOpcional = this.repositorio.findById(id);
         if (!pedidoOpcional.isPresent()) {
@@ -97,11 +97,18 @@ public class PedidoServicio {
         }
         Pedido pedidoEncontrado = pedidoOpcional.get();
 
-        // Actualizar los campos permitidos
         // Fecha de entrega
         pedidoEncontrado.setFechaEntrega(datosActualizados.getFechaEntrega());
+
+        // Permitir la actualización del monto
+        pedidoEncontrado.setMontoTotal(datosActualizados.getMontoTotal());
+
         // Costo de envío
         pedidoEncontrado.setCostoEnvio(datosActualizados.getCostoEnvio());
+
+        // (Opcional pero recomendable: actualizar la relación Cliente)
+        pedidoEncontrado.setCliente(datosActualizados.getCliente());
+
 
         // Guardar en la base de datos
         Pedido pedidoActualizado = this.repositorio.save(pedidoEncontrado);

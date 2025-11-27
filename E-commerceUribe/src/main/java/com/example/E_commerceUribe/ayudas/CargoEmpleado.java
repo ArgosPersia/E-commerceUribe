@@ -1,7 +1,7 @@
 package com.example.E_commerceUribe.ayudas;
 
 public enum CargoEmpleado {
-    Analsita,
+    Analista,
     Auxiliar,
     Profesional,
     Vendedor
